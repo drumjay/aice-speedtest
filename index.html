@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AICE 응시 인터넷 속도 측정</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #f6d365, #fda085);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      width: 100%;
+      max-width: 600px;
+    }
+    .logo {
+      display: block;
+      margin: 0 auto 20px;
+      max-width: 180px;
+      height: auto;
+    }
+    h1 {
+      font-size: 1.6em;
+      margin-bottom: 20px;
+      color: #333;
+      text-align: center;
+    }
+    .result-box {
+      display: flex;
+      align-items: center;
+      margin: 15px 0;
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      background-color: #fafafa;
+    }
+    .result-icon {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      margin-right: 15px;
+      flex-shrink: 0;
+    }
+    .blue { background-color: #007bff; }
+    .green { background-color: #28a745; }
+    .red { background-color: #dc3545; }
+    .result-text {
+      line-height: 1.4;
+    }
+    #progress {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 0.95em;
+      color: #555;
+    }
+    #speedChart {
+      max-width: 100%;
+      margin-top: 30px;
+    }
+    @media (max-width: 480px) {
+      .result-box { flex-direction: column; align-items: flex-start; }
+      .result-icon { margin-bottom: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="https://aice.study/img/logo.a4944efe.png" alt="AICE 로고" class="logo" />
+    <h1>AICE 응시 인터넷 속도 측정</h1>
+    <div id="downloadResult" class="result-box">📥 다운로드 속도 측정 중...</div>
+    <div id="uploadResult" class="result-box">📤 업로드 속도 측정 중...</div>
+    <canvas id="speedChart" height="130"></canvas>
+    <div id="progress"></div>
+  </div>
+
+  <!-- Chart.js 및 annotation 플러그인 -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.4.0"></script>
+  <script>
+    Chart.register(window['chartjs-plugin-annotation']); // ✅ 플러그인 등록 필수
+  </script>
+
+  <script>
+    const TEST_COUNT = 15;
+    const FILE_SIZE_BYTES = 10 * 1024 * 1024;
+    const DOWNLOAD_URL = "https://speed.cloudflare.com/__down?bytes=10000000";
+    const UPLOAD_URL = "https://speed.cloudflare.com/__up";
+
+    function getMedian(values) {
+      const sorted = values.slice().sort((a, b) => a - b);
+      const mid = Math.floor(sorted.length / 2);
+      return sorted.length % 2 !== 0
+        ? sorted[mid]
+        : (sorted[mid - 1] + sorted[mid]) / 2;
+    }
+
+    async function measureDownloadSpeed() {
+      const results = [];
+      for (let i = 1; i <= TEST_COUNT; i++) {
+        updateProgress(`📥 다운로드 테스트 ${i} / ${TEST_COUNT} 진행 중...`);
+        const start = performance.now();
+        try {
+          const res = await fetch(DOWNLOAD_URL + "&cache=" + Math.random(), { cache: "no-cache" });
+          await res.blob();
+          const end = performance.now();
+          const duration = (end - start) / 1000;
+          const bps = (FILE_SIZE_BYTES * 8) / duration;
+          results.push(bps / 1_000_000);
+        } catch {
+          console.warn("다운로드 실패");
+        }
+      }
+      return getMedian(results);
+    }
+
+    async function measureUploadSpeed() {
+      const dummyData = new Blob([new Uint8Array(FILE_SIZE_BYTES)], { type: "application/octet-stream" });
+      const results = [];
+      for (let i = 1; i <= TEST_COUNT; i++) {
+        updateProgress(`📤 업로드 테스트 ${i} / ${TEST_COUNT} 진행 중...`);
+        const start = performance.now();
+        try {
+          await fetch(UPLOAD_URL, {
+            method: "POST",
+            body: dummyData,
+            mode: "no-cors"
+          });
+          const end = performance.now();
+          const duration = (end - start) / 1000;
+          const bps = (FILE_SIZE_BYTES * 8) / duration;
+          results.push(bps / 1_000_000);
+        } catch {
+          console.warn("업로드 실패");
+        }
+      }
+      return getMedian(results);
+    }
+
+    function updateResult(targetId, speed, label) {
+      let iconClass = "";
+      let message = "";
+
+      if (speed > 60) {
+        iconClass = "blue";
+        message = "AICE 응시에 최적화 되었습니다.";
+      } else if (speed < 50) {
+        iconClass = "red";
+        message = "AICE 응시 시 문제가 발생 할 수 있습니다.";
+      } else {
+        iconClass = "green";
+        message = "AICE 응시가 가능합니다.";
+      }
+
+      document.getElementById(targetId).innerHTML = `
+        <div class="result-icon ${iconClass}"></div>
+        <div class="result-text">
+          <strong>${label}</strong><br>
+          ${message}<br>
+          <span style="font-size: 0.85em;">측정 속도(중앙값): ${speed.toFixed(2)} Mbps</span>
+        </div>`;
+    }
+
+    function updateProgress(text) {
+      document.getElementById("progress").innerText = text;
+    }
+
+    function renderChart(download, upload) {
+      const ctx = document.getElementById('speedChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['다운로드', '업로드'],
+          datasets: [{
+            label: 'Mbps',
+            data: [download, upload],
+            backgroundColor: ['#4a90e2', '#28a745'],
+            borderRadius: 8,
+            barThickness: 40
+          }]
+        },
+        options: {
+          responsive: true,
+          animation: {
+            duration: 1000,
+            easing: 'easeOutQuart'
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              suggestedMax: 100,
+              ticks: { font: { size: 13 } },
+              grid: { color: 'rgba(0,0,0,0.05)' }
+            }
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#333',
+              titleFont: { weight: 'bold' },
+              bodyFont: { size: 14 },
+              padding: 10
+            },
+            annotation: {
+              annotations: {
+                optimalLine: {
+                  type: 'line',
+                  yMin: 60,
+                  yMax: 60,
+                  borderColor: '#007bff',
+                  borderWidth: 1,
+                  label: {
+                    content: '최적 기준 (60Mbps)',
+                    enabled: true,
+                    position: 'end',
+                    backgroundColor: '#007bff',
+                    color: '#fff',
+                    font: { size: 11 }
+                  }
+                },
+                warningLine: {
+                  type: 'line',
+                  yMin: 50,
+                  yMax: 50,
+                  borderColor: '#ffc107',
+                  borderWidth: 1,
+                  label: {
+                    content: '경계 기준 (50Mbps)',
+                    enabled: true,
+                    position: 'end',
+                    backgroundColor: '#ffc107',
+                    color: '#000',
+                    font: { size: 11 }
+                  }
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    async function startTests() {
+      try {
+        const download = await measureDownloadSpeed();
+        updateResult("downloadResult", download, "📥 다운로드");
+        const upload = await measureUploadSpeed();
+        updateResult("uploadResult", upload, "📤 업로드");
+        renderChart(download, upload);
+        updateProgress("✅ 모든 테스트 완료");
+      } catch (e) {
+        updateProgress("❌ 테스트 도중 오류가 발생했습니다.");
+      }
+    }
+
+    startTests();
+  </script>
+</body>
+</html>
