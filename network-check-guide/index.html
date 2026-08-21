@@ -223,9 +223,9 @@
               <div>
                 <div class="flex items-center gap-2 mb-1">
                   <span class="inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30">
-                    <Icon name="shield-check" size={14} /> 현장 시설관리자 & non-IT 담당자용
+                    <Icon name="shield-check" size={14} /> AICE 오프라인 시험 관리자 및 현장 시설관리자용
                   </span>
-                  <span class="text-xs text-slate-400 hidden sm:inline">PC / 모바일 겸용 반응형 v2.0</span>
+                  <span class="text-xs text-slate-400 hidden sm:inline">AICE 오프라인 시험장 환경 검사 kit v1.0</span>
                 </div>
                 <h1 class="text-2xl md:text-3xl font-black tracking-tight text-white flex items-center gap-2">
                   AICE 오프라인 응시장 사전 점검 가이드
@@ -342,7 +342,7 @@
                           데스크탑 유선 네트워크 점검 위치도
                         </h3>
                         <span class="text-[11px] text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full font-medium">
-                          💡 오른쪽 단계를 선택하면 그림에 점검 구간이 표시됩니다
+                          💡 구간별 단계를 선택하면 그림에 점검 구간이 표시됩니다.
                         </span>
                       </div>
 
@@ -476,7 +476,7 @@
                     <div class="lg:col-span-5 space-y-3 flex flex-col justify-between">
                       
                       <div class="text-xs font-bold text-slate-500 uppercase tracking-wider px-1">
-                        시설관리자 구간별 필수 점검 사항
+                        구간별 필수 점검 사항(구간별 체크박스에 체크)
                       </div>
 
                       {/* Card 1: ISP Line */}
@@ -498,7 +498,7 @@
                             <div class="text-xs font-bold text-blue-600 mb-0.5">구간 1: 통신사 인터넷 회선 대역폭</div>
                             <div class="text-sm font-bold text-slate-900">20명 기준 1Gbps 이상 회선 확보</div>
                             <p class="text-xs text-slate-600 mt-1 leading-relaxed">
-                              💡 <strong>쉬운 설명:</strong> 외부에서 들어오는 메인 인터넷 속도입니다. 20명 이상 동시에 시험을 볼 경우 최소 <span class="font-bold text-blue-700">1Gbps</span> (추천 <span class="font-bold text-blue-700">2.5Gbps</span>) 전용 회선이어야 끊김이 없습니다.
+                              💡 <strong>설명:</strong> 외부에서 들어오는 메인 인터넷 속도입니다. 20명 이상 동시에 시험을 볼 경우 최소 <span class="font-bold text-blue-700">1Gbps</span> (추천 <span class="font-bold text-blue-700">2.5Gbps</span>) 회선이어야 끊김이 없습니다.
                             </p>
                           </div>
                         </div>
@@ -523,7 +523,7 @@
                             <div class="text-xs font-bold text-red-600 mb-0.5">구간 2: 기관 보안 차단 정책 (방화벽)</div>
                             <div class="text-sm font-bold text-slate-900">학내/기관 방화벽 포트 차단 사전 해제</div>
                             <p class="text-xs text-slate-600 mt-1 leading-relaxed">
-                              💡 <strong>쉬운 설명:</strong> 관공서나 학교 자체 보안장비가 시험 사이트 접속이나 카메라 통신을 차단하지 않는지 전산 담당자에게 미리 확인하고 예외 처리해야 합니다.
+                              💡 <strong>설명:</strong> 관공서나 학교 자체 보안장비가 시험 사이트 접속이나 카메라 통신을 차단하지 않는지 전산 담당자에게 미리 확인하고 예외 처리해야 합니다.
                             </p>
                           </div>
                         </div>
@@ -548,7 +548,7 @@
                             <div class="text-xs font-bold text-amber-700 mb-0.5">구간 3: 스위치 및 UTP 케이블</div>
                             <div class="text-sm font-bold text-slate-900">스위치 포트가 1G급 이상인지 확인</div>
                             <p class="text-xs text-slate-600 mt-1 leading-relaxed">
-                              💡 <strong>쉬운 설명:</strong> 여러 PC의 인터넷선이 모이는 검은 상자(스위치)가 구형 100Mbps가 아닌 <span class="font-bold text-amber-800">기가비트(1G)</span> 제품인지, UTP 케이블이 단단히 꽂혀 있는지 확인합니다.
+                              💡 <strong>설명:</strong> 여러 PC의 인터넷선(UTP 케이블)이 모이는 스위치가 구형 100Mbps가 아닌 <span class="font-bold text-amber-800">기가비트(1G)</span> 제품인지, UTP 케이블이 단단히 꽂혀 있는지 확인합니다.
                             </p>
                           </div>
                         </div>
@@ -573,7 +573,7 @@
                             <div class="text-xs font-bold text-emerald-700 mb-0.5">구간 4: PC 랜카드 및 연결 상태</div>
                             <div class="text-sm font-bold text-slate-900">각 PC의 연결 속도가 1Gbps인지 확인</div>
                             <p class="text-xs text-slate-600 mt-1 leading-relaxed">
-                              💡 <strong>쉬운 설명:</strong> 각 시험용 PC의 랜카드가 <span class="font-bold text-emerald-800">기가비트(1G)</span>를 지원하고, Windows의 이더넷 연결 속도가 1.0Gbps로 표시되는지 확인합니다.
+                              💡 <strong>설명:</strong> 각 시험용 PC의 랜카드가 <span class="font-bold text-emerald-800">기가비트(1G)</span>를 지원하고, Windows의 이더넷 연결 속도가 1.0Gbps로 표시되는지 확인합니다.
                             </p>
                           </div>
                         </div>
