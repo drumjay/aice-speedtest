@@ -1067,50 +1067,23 @@
                     </div>
                   </div>
 
-                  <div class="no-print bg-blue-50 border border-blue-200 p-3 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div class="flex items-center gap-2 text-sm font-bold text-blue-900">
-                      <Icon name={netType === 'wired' ? 'monitor' : 'wifi'} size={17} />
-                      통합 체크리스트 적용 환경
-                    </div>
-                    <div class="bg-white/80 p-1 rounded-xl border border-blue-100 flex gap-1">
-                      <button
-                        onClick={() => setNetType('wired')}
-                        class={`flex-1 px-3 py-2 text-xs font-bold rounded-lg transition-all ${
-                          netType === 'wired' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
-                        }`}
-                      >
-                        데스크탑 유선 환경
-                      </button>
-                      <button
-                        onClick={() => setNetType('wireless')}
-                        class={`flex-1 px-3 py-2 text-xs font-bold rounded-lg transition-all ${
-                          netType === 'wireless' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
-                        }`}
-                      >
-                        노트북 무선 AP 환경
-                      </button>
-                    </div>
-                  </div>
-
                   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 no-print">
-                    <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2">
-                      <div class="text-sm font-bold text-slate-900">1. 데스크탑 유선 네트워크</div>
+                    <div class="lg:col-span-2 bg-blue-50 p-3 rounded-2xl border border-blue-200 space-y-2">
+                      <div class="text-sm font-bold text-slate-900 flex flex-wrap items-center gap-2">
+                        <Icon name={netType === 'wired' ? 'monitor' : 'wifi'} size={17} class="text-blue-600" />
+                        1. {netType === 'wired' ? '데스크탑 유선 네트워크' : '노트북 무선 AP 권장 구성'}
+                        <span class="text-[11px] text-blue-700 bg-white px-2 py-0.5 rounded-full border border-blue-200">
+                          1번 탭 선택 환경 자동 적용
+                        </span>
+                      </div>
                       <GuideImage
-                        src={DESKTOP_NETWORK_IMAGE}
-                        alt="데스크탑 시험장 유선 네트워크 구성도"
+                        src={netType === 'wired' ? DESKTOP_NETWORK_IMAGE : WIRELESS_NETWORK_IMAGE}
+                        alt={netType === 'wired' ? '데스크탑 시험장 유선 네트워크 구성도' : '무선 인터넷 AP 구성 방식 3가지 비교도'}
                       />
                     </div>
 
                     <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2">
-                      <div class="text-sm font-bold text-slate-900">2. 무선 AP 권장 구성</div>
-                      <GuideImage
-                        src={WIRELESS_NETWORK_IMAGE}
-                        alt="무선 인터넷 AP 구성 방식 3가지 비교도"
-                      />
-                    </div>
-
-                    <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2">
-                      <div class="text-sm font-bold text-slate-900">3. 2K 데모 영상 동시 재생</div>
+                      <div class="text-sm font-bold text-slate-900">2. 2K 데모 영상 동시 재생</div>
                       <GuideImage
                         src={LOAD_TEST_IMAGE}
                         alt="2K 데모 영상 동시 재생 및 1440p60 HD 화질 설정 안내"
@@ -1119,7 +1092,7 @@
                     </div>
 
                     <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2">
-                      <div class="text-sm font-bold text-slate-900">4. 대표 PC Fast.com 속도 측정</div>
+                      <div class="text-sm font-bold text-slate-900">3. 대표 PC Fast.com 속도 측정</div>
                       <GuideImage
                         src={FAST_TEST_IMAGE}
                         alt="Fast.com 다운로드 및 업로드 속도 측정 안내"
@@ -1128,7 +1101,7 @@
                     </div>
 
                     <div class="lg:col-span-2 bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2">
-                      <div class="text-sm font-bold text-slate-900">5. 시험 시스템 접속 및 문항 로딩</div>
+                      <div class="text-sm font-bold text-slate-900">4. 시험 시스템 접속 및 문항 로딩</div>
                       <GuideImage
                         src={PLATFORM_TEST_IMAGE}
                         alt="실제 시험 플랫폼 접속 및 머신러닝 학습 결과 확인 화면"
